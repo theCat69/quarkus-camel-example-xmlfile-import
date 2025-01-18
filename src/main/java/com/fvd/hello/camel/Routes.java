@@ -47,7 +47,7 @@ public class Routes extends RouteBuilder {
 
   }
 
-  private String getAbsolutePath(String folderWork) {
-    return Path.of(folderWork).toAbsolutePath().toString();
+  private String getAbsolutePath(String folder) {
+    return Path.of(folder).toAbsolutePath().toString();
   }
 }

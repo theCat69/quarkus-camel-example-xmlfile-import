@@ -16,6 +16,7 @@ import lombok.ToString;
 @ToString
 @RegisterForReflection
 public class Shit {
+
   @XmlAttribute
   int id;
 

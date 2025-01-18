@@ -14,16 +14,16 @@ public class StrategyManager implements Processor {
 
   private final Instance<XmlProcessorStrategy<?>> xmlProcessors;
 
-  private <T> void applyStrategy(T elem) {
+  <T> void applyStrategy(T elem) {
     xmlProcessors.stream()
       .filter(xmlProcessorStrategy -> xmlProcessorStrategy.isApplicable(elem))
       .findFirst()
-      .orElseThrow(RuntimeException::new)
+      .orElseThrow(() -> new NoApplicableStrategyException(elem))
       .processStrategy(elem);
   }
 
   @Override
-  public void process(Exchange exchange) throws Exception {
+  public void process(Exchange exchange) {
     applyStrategy(exchange.getMessage().getBody());
   }
 
