@@ -1,16 +1,14 @@
-package com.fvd.hello.camel.manager;
+package com.fvd.hello.camel.imports;
 
+import com.fvd.hello.camel.imports.exception.NoApplicableStrategyException;
 import io.quarkus.test.junit.QuarkusTest;
 import lombok.Builder;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @QuarkusTest
-@RequiredArgsConstructor
-class StrategyManagerTest {
-  final StrategyManager strategyManager;
+record StrategyManagerTest(StrategyManager strategyManager) {
 
   @Test
   void strategyManager_withElementWithNoCorrespondingStrategy_shouldThrow() {
@@ -30,4 +28,5 @@ class StrategyManagerTest {
     int id;
     String price;
   }
+
 }

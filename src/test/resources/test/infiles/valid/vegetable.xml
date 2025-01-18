@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<shit id="1">
-  <Shit>Banana</Shit>
+<vegetable id="1">
+  <Name>Salad</Name>
   <price>9.99</price>
-</shit>
+</vegetable>

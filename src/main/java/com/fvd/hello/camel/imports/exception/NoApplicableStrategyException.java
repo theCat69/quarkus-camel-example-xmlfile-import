@@ -1,4 +1,4 @@
-package com.fvd.hello.camel.manager;
+package com.fvd.hello.camel.imports.exception;
 
 public class NoApplicableStrategyException extends RuntimeException {
   public NoApplicableStrategyException(Object elem) {

@@ -1,6 +1,6 @@
 package com.fvd.hello.camel;
 
-import com.fvd.hello.camel.manager.StrategyManager;
+import com.fvd.hello.camel.imports.StrategyManager;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.UnmarshalException;

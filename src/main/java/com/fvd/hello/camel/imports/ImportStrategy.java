@@ -1,6 +1,6 @@
-package com.fvd.hello.camel.manager;
+package com.fvd.hello.camel.imports;
 
-public abstract class XmlProcessorStrategy<T> {
+public abstract class ImportStrategy<T> {
 
   public void processStrategy(Object elem) {
     innerProcess(castToElement(elem));

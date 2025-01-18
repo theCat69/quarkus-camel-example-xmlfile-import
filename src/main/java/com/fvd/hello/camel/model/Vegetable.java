@@ -15,13 +15,13 @@ import lombok.ToString;
 @Setter
 @ToString
 @RegisterForReflection
-public class Shit {
+public class Vegetable {
 
   @XmlAttribute
   int id;
 
-  @XmlElement(name = "Shit")
-  String shit;
+  @XmlElement(name = "Name")
+  String name;
 
   String price;
 }

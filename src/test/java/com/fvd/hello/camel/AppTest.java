@@ -53,7 +53,7 @@ class AppTest {
     //given
     var inFiles = List.of(
       "valid/fruit.xml",
-      "valid/shit.xml",
+      "valid/vegetable.xml",
       "invalid/hello.txt"
     );
     //when

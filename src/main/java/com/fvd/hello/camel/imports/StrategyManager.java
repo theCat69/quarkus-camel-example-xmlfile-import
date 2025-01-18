@@ -1,5 +1,6 @@
-package com.fvd.hello.camel.manager;
+package com.fvd.hello.camel.imports;
 
+import com.fvd.hello.camel.imports.exception.NoApplicableStrategyException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Instance;
 import lombok.Getter;
@@ -12,11 +13,11 @@ import org.apache.camel.Processor;
 @RequiredArgsConstructor
 public class StrategyManager implements Processor {
 
-  private final Instance<XmlProcessorStrategy<?>> xmlProcessors;
+  private final Instance<ImportStrategy<?>> xmlProcessors;
 
   <T> void applyStrategy(T elem) {
     xmlProcessors.stream()
-      .filter(xmlProcessorStrategy -> xmlProcessorStrategy.isApplicable(elem))
+      .filter(importStrategy -> importStrategy.isApplicable(elem))
       .findFirst()
       .orElseThrow(() -> new NoApplicableStrategyException(elem))
       .processStrategy(elem);
@@ -28,6 +29,6 @@ public class StrategyManager implements Processor {
   }
 
   public Class<?>[] getClazzes() {
-    return xmlProcessors.stream().map(XmlProcessorStrategy::getClazz).toArray(Class<?>[]::new);
+    return xmlProcessors.stream().map(ImportStrategy::getClazz).toArray(Class<?>[]::new);
   }
 }
