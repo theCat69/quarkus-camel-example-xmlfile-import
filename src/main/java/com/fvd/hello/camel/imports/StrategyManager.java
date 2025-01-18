@@ -13,10 +13,10 @@ import org.apache.camel.Processor;
 @RequiredArgsConstructor
 public class StrategyManager implements Processor {
 
-  private final Instance<ImportStrategy<?>> xmlProcessors;
+  private final Instance<ImportStrategy<?>> importStrategies;
 
   <T> void applyStrategy(T elem) {
-    xmlProcessors.stream()
+    importStrategies.stream()
       .filter(importStrategy -> importStrategy.isApplicable(elem))
       .findFirst()
       .orElseThrow(() -> new NoApplicableStrategyException(elem))
@@ -29,6 +29,6 @@ public class StrategyManager implements Processor {
   }
 
   public Class<?>[] getClazzes() {
-    return xmlProcessors.stream().map(ImportStrategy::getClazz).toArray(Class<?>[]::new);
+    return importStrategies.stream().map(ImportStrategy::getClazz).toArray(Class<?>[]::new);
   }
 }
