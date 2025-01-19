@@ -1,5 +1,6 @@
 package com.fvd.hello.camel.db.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder
 public class FruitEntity extends AbstractBaseEntity {
+  @Column(unique = true)
   private String name;
   private String price;
 }

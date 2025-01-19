@@ -41,7 +41,7 @@ public class Routes extends RouteBuilder {
       "&includeExt=xml" +
       "&recursive=true" +
       "&filter=#fileFilter" +
-      "&sortBy=file:modified")
+      "&sortBy=reverse:file:modified")
       .log("File : ${header.CamelFileName} at ${header.CamelFileLastModified}")
       .convertBodyTo(byte[].class)
       .log("Body converted")

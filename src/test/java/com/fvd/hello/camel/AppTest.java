@@ -138,6 +138,39 @@ class AppTest {
       });
   }
 
+  @Test
+  void fileRoute_withDatabaseConstraintException_shouldFail() {
+    //given
+    var inFiles = List.of(
+      "valid/fruit.xml",
+      "invalid/fruit2.xml"
+    );
+    //when
+    writeInputFiles(inFiles);
+    //then
+    await().atMost(20, TimeUnit.SECONDS)
+      .pollDelay(500, TimeUnit.MILLISECONDS).untilAsserted(() -> {
+        assertThat(inFiles).allMatch(fName -> {
+          var name = fName.split("/")[1];
+          if (fName.contains("invalid")) {
+            return Files.exists(Path.of(folderFailed + File.separator + name));
+          } else {
+            return Files.exists(Path.of(folderOut + File.separator + name));
+          }
+        });
+
+        assertThat(FileUtils.isEmptyDirectory(new File(folderIn))).isTrue();
+        assertThat(FileUtils.isEmptyDirectory(new File(folderWork))).isTrue();
+
+        QuarkusTransaction.requiringNew().call(() -> {
+          assertThat(fruitRepository.listAll()).hasSize(1)
+            .extracting(FruitEntity::getName, FruitEntity::getPrice)
+            .containsExactly(Tuple.tuple("Banana", "9.99"));
+          return 0;
+        });
+      });
+  }
+
   private URL getResource(String path) {
     return Objects.requireNonNull(this.getClass().getClassLoader().getResource(path));
   }
