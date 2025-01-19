@@ -160,8 +160,7 @@ class AppTest {
 
   private void writeInputFiles(List<String> fileNames) {
     fileNames.forEach(fName -> {
-      try {
-        var isResource = getResourceAsStream(TEST_INFILES + fName);
+      try (var isResource = getResourceAsStream(TEST_INFILES + fName)) {
         var name = fName.split("/")[1];
         File targetFile = new File(folderIn + File.separator + name);
         FileUtils.copyInputStreamToFile(isResource, targetFile);
