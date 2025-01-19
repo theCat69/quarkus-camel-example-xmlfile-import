@@ -38,8 +38,12 @@ public class Routes extends RouteBuilder {
       "&preMove=" + getAbsolutePath(folderWork) +
       "&move=" + getAbsolutePath(folderOut) +
       "&moveFailed=" + getAbsolutePath(folderFailed) +
-      "&recursive=true")
+      "&includeExt=xml" +
+      "&recursive=true" +
+      "&filter=#fileFilter")
       .log("File : ${header.CamelFileName} at ${header.CamelFileLastModified}")
+      .convertBodyTo(byte[].class)
+      .log("Body converted")
       .unmarshal(jaxb)
       .log("Unmarshalled")
       .process(strategyManager)

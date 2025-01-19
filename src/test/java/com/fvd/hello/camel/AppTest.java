@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -35,6 +36,8 @@ class AppTest {
   String folderWork;
   @ConfigProperty(name = "folders.failed.path")
   String folderFailed;
+  @ConfigProperty(name = "filter.lastmodified.seconds.beforeintegrate")
+  Integer secondsSinceLastModified;
 
   @BeforeEach
   @SneakyThrows
@@ -54,22 +57,46 @@ class AppTest {
     var inFiles = List.of(
       "valid/fruit.xml",
       "valid/vegetable.xml",
-      "invalid/hello.txt"
+      "invalid/hello.xml"
     );
     //when
     copyInputFiles(inFiles);
     //then
-    await().atMost(5, TimeUnit.SECONDS).pollDelay(500, TimeUnit.MILLISECONDS).untilAsserted(() -> {
-      assertThat(inFiles).allMatch(fName -> {
-        var name = fName.split("/")[1];
-        if(fName.contains("invalid")) {
-          return Files.exists(Path.of(folderFailed + File.separator + name));
-        } else {
-          return Files.exists(Path.of(folderOut + File.separator + name));
-        }
+    await().atMost(30, TimeUnit.SECONDS)
+      .pollDelay(500, TimeUnit.MILLISECONDS).untilAsserted(() -> {
+        assertThat(inFiles).allMatch(fName -> {
+          var name = fName.split("/")[1];
+          if (fName.contains("invalid")) {
+            return Files.exists(Path.of(folderFailed + File.separator + name));
+          } else {
+            return Files.exists(Path.of(folderOut + File.separator + name));
+          }
+        });
+        assertThat(FileUtils.isEmptyDirectory(new File(folderIn))).isTrue();
+        assertThat(FileUtils.isEmptyDirectory(new File(folderWork))).isTrue();
       });
-      assertThat(FileUtils.isEmptyDirectory(new File(folderIn))).isTrue();
-    });
+  }
+
+  @Test
+  void fileRoute_withNewlyCreatedFile_shouldFilterFileForAtLeastFilterTime() {
+    //given
+    var inFiles = List.of(
+      "valid/fruit.xml",
+      "valid/vegetable.xml"
+    );
+    //when
+    writeInputFiles(inFiles);
+    //then
+    await().atLeast(secondsSinceLastModified, TimeUnit.SECONDS)
+      .atMost(30, TimeUnit.SECONDS)
+      .pollDelay(500, TimeUnit.MILLISECONDS).untilAsserted(() -> {
+        assertThat(inFiles).allMatch(fName -> {
+          var name = fName.split("/")[1];
+          return Files.exists(Path.of(folderOut + File.separator + name));
+        });
+        assertThat(FileUtils.isEmptyDirectory(new File(folderIn))).isTrue();
+        assertThat(FileUtils.isEmptyDirectory(new File(folderWork))).isTrue();
+      });
   }
 
   private URL getResource(String path) {
@@ -87,4 +114,22 @@ class AppTest {
       }
     });
   }
+
+  private InputStream getResourceAsStream(String path) {
+    return Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(path));
+  }
+
+  private void writeInputFiles(List<String> fileNames) {
+    fileNames.forEach(fName -> {
+      try {
+        var isResource = getResourceAsStream(TEST_INFILES + fName);
+        var name = fName.split("/")[1];
+        File targetFile = new File(folderIn + File.separator + name);
+        FileUtils.copyInputStreamToFile(isResource, targetFile);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    });
+  }
+
 }
