@@ -6,7 +6,7 @@ public abstract class ImportStrategy<T> {
     innerProcess(castToElement(elem));
   }
 
-  protected abstract void innerProcess(T elem);
+  public abstract void innerProcess(T elem);
 
   public abstract Class<T> getClazz();
 

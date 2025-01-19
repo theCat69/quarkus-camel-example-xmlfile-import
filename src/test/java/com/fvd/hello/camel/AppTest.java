@@ -1,8 +1,15 @@
 package com.fvd.hello.camel;
 
+import com.fvd.hello.camel.db.entities.FruitEntity;
+import com.fvd.hello.camel.db.entities.VegetableEntity;
+import com.fvd.hello.camel.db.repositories.FruitRepository;
+import com.fvd.hello.camel.db.repositories.VegetableRepository;
+import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.junit.QuarkusTest;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
+import org.assertj.core.groups.Tuple;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
 @QuarkusTest
+@RequiredArgsConstructor
 class AppTest {
 
   static final String TEST_INFILES = "test/infiles/";
@@ -39,6 +47,9 @@ class AppTest {
   @ConfigProperty(name = "filter.lastmodified.seconds.beforeintegrate")
   Integer secondsSinceLastModified;
 
+  final FruitRepository fruitRepository;
+  final VegetableRepository vegetableRepository;
+
   @BeforeEach
   @SneakyThrows
   void setUp() {
@@ -49,6 +60,11 @@ class AppTest {
   void tearDown() {
     Stream.of(folderIn, folderOut, folderWork, folderFailed)
       .forEach(folder -> FileUtils.deleteQuietly(new File(folder)));
+    QuarkusTransaction.requiringNew().call(() -> {
+      fruitRepository.deleteAll();
+      vegetableRepository.deleteAll();
+      return 0;
+    });
   }
 
   @Test
@@ -72,8 +88,19 @@ class AppTest {
             return Files.exists(Path.of(folderOut + File.separator + name));
           }
         });
+
         assertThat(FileUtils.isEmptyDirectory(new File(folderIn))).isTrue();
         assertThat(FileUtils.isEmptyDirectory(new File(folderWork))).isTrue();
+
+        QuarkusTransaction.requiringNew().call(() -> {
+          assertThat(vegetableRepository.listAll()).hasSize(1)
+            .extracting(VegetableEntity::getName, VegetableEntity::getPrice)
+            .containsExactly(Tuple.tuple("Salad", "9.99"));
+          assertThat(fruitRepository.listAll()).hasSize(1)
+            .extracting(FruitEntity::getName, FruitEntity::getPrice)
+            .containsExactly(Tuple.tuple("Banana", "9.99"));
+          return 0;
+        });
       });
   }
 
@@ -94,8 +121,20 @@ class AppTest {
           var name = fName.split("/")[1];
           return Files.exists(Path.of(folderOut + File.separator + name));
         });
+
         assertThat(FileUtils.isEmptyDirectory(new File(folderIn))).isTrue();
         assertThat(FileUtils.isEmptyDirectory(new File(folderWork))).isTrue();
+
+        QuarkusTransaction.requiringNew().call(() -> {
+          assertThat(vegetableRepository.listAll()).hasSize(1)
+            .extracting(VegetableEntity::getName, VegetableEntity::getPrice)
+            .containsExactly(Tuple.tuple("Salad", "9.99"));
+          assertThat(fruitRepository.listAll()).hasSize(1)
+            .extracting(FruitEntity::getName, FruitEntity::getPrice)
+            .containsExactly(Tuple.tuple("Banana", "9.99"));
+          return 0;
+        });
+
       });
   }
 
