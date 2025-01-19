@@ -11,7 +11,7 @@ import org.apache.camel.Processor;
 @ApplicationScoped
 @Getter
 @RequiredArgsConstructor
-public class StrategyManager implements Processor {
+public class ImportStrategyManager implements Processor {
 
   private final Instance<ImportStrategy<?>> importStrategies;
 
@@ -20,7 +20,7 @@ public class StrategyManager implements Processor {
       .filter(importStrategy -> importStrategy.isApplicable(elem))
       .findFirst()
       .orElseThrow(() -> new NoApplicableStrategyException(elem))
-      .processStrategy(elem);
+      .applyStrategy(elem);
   }
 
   @Override

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @QuarkusTest
-record StrategyManagerTest(StrategyManager strategyManager) {
+record ImportStrategyManagerTest(ImportStrategyManager importStrategyManager) {
 
   @Test
   void strategyManager_withElementWithNoCorrespondingStrategy_shouldThrow() {
@@ -18,7 +18,7 @@ record StrategyManagerTest(StrategyManager strategyManager) {
       .price("12.44")
       .build();
     //when & then
-    assertThatThrownBy(() -> strategyManager.applyStrategy(elementWithNoStrategy))
+    assertThatThrownBy(() -> importStrategyManager.applyStrategy(elementWithNoStrategy))
       .isInstanceOf(NoApplicableStrategyException.class)
       .hasMessageContaining("ElementWithNoStrategy");
   }

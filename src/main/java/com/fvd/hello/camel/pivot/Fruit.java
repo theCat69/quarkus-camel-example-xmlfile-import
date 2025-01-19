@@ -1,4 +1,4 @@
-package com.fvd.hello.camel.model;
+package com.fvd.hello.camel.pivot;
 
 
 import io.quarkus.runtime.annotations.RegisterForReflection;

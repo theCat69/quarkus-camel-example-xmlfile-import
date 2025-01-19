@@ -2,11 +2,11 @@ package com.fvd.hello.camel.imports;
 
 public abstract class ImportStrategy<T> {
 
-  public void processStrategy(Object elem) {
+  public void applyStrategy(Object elem) {
     innerProcess(castToElement(elem));
   }
 
-  public abstract void innerProcess(T elem);
+  protected abstract void innerProcess(T elem);
 
   public abstract Class<T> getClazz();
 

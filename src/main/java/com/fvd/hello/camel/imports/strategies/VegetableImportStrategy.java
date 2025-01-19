@@ -3,7 +3,7 @@ package com.fvd.hello.camel.imports.strategies;
 import com.fvd.hello.camel.db.entities.VegetableEntity;
 import com.fvd.hello.camel.db.repositories.VegetableRepository;
 import com.fvd.hello.camel.imports.ImportStrategy;
-import com.fvd.hello.camel.model.Vegetable;
+import com.fvd.hello.camel.pivot.Vegetable;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class VegetableImportStrategy extends ImportStrategy<Vegetable> {
 
   @Override
   @Transactional(REQUIRES_NEW)
-  public void innerProcess(Vegetable vegetable) {
+  protected void innerProcess(Vegetable vegetable) {
     VegetableEntity vegetableEntity = VegetableEntity.builder()
       .name(vegetable.getName())
       .price(vegetable.getPrice())

@@ -1,6 +1,6 @@
 package com.fvd.hello.camel;
 
-import com.fvd.hello.camel.imports.StrategyManager;
+import com.fvd.hello.camel.imports.ImportStrategyManager;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.UnmarshalException;
@@ -24,11 +24,11 @@ public class Routes extends RouteBuilder {
   @ConfigProperty(name = "folders.failed.path")
   String folderFailed;
 
-  private final StrategyManager strategyManager;
+  private final ImportStrategyManager importStrategyManager;
 
   @Override
   public void configure() throws Exception {
-    DataFormat jaxb = new JaxbDataFormat(JAXBContext.newInstance(strategyManager.getClazzes()));
+    DataFormat jaxb = new JaxbDataFormat(JAXBContext.newInstance(importStrategyManager.getClazzes()));
 
     onException(UnmarshalException.class)
       .log(LoggingLevel.ERROR, "Cannot unmarshall file :${header.CamelFilePath}" +
@@ -47,7 +47,7 @@ public class Routes extends RouteBuilder {
       .log("Body converted")
       .unmarshal(jaxb)
       .log("Unmarshalled")
-      .process(strategyManager)
+      .process(importStrategyManager)
       .log("done");
 
   }
