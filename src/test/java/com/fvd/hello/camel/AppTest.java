@@ -78,7 +78,7 @@ class AppTest {
     //when
     copyInputFiles(inFiles);
     //then
-    await().atMost(30, TimeUnit.SECONDS)
+    await().atMost(20, TimeUnit.SECONDS)
       .pollDelay(500, TimeUnit.MILLISECONDS).untilAsserted(() -> {
         assertThat(inFiles).allMatch(fName -> {
           var name = fName.split("/")[1];
@@ -115,7 +115,7 @@ class AppTest {
     writeInputFiles(inFiles);
     //then
     await().atLeast(secondsSinceLastModified, TimeUnit.SECONDS)
-      .atMost(30, TimeUnit.SECONDS)
+      .atMost(20, TimeUnit.SECONDS)
       .pollDelay(500, TimeUnit.MILLISECONDS).untilAsserted(() -> {
         assertThat(inFiles).allMatch(fName -> {
           var name = fName.split("/")[1];

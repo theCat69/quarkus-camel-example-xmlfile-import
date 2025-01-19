@@ -17,14 +17,14 @@ import java.nio.file.Path;
 @RequiredArgsConstructor
 public class Routes extends RouteBuilder {
 
-  private final StrategyManager strategyManager;
-
   @ConfigProperty(name = "folders.out.path")
   String folderOut;
   @ConfigProperty(name = "folders.work.path")
   String folderWork;
   @ConfigProperty(name = "folders.failed.path")
   String folderFailed;
+
+  private final StrategyManager strategyManager;
 
   @Override
   public void configure() throws Exception {
@@ -40,7 +40,8 @@ public class Routes extends RouteBuilder {
       "&moveFailed=" + getAbsolutePath(folderFailed) +
       "&includeExt=xml" +
       "&recursive=true" +
-      "&filter=#fileFilter")
+      "&filter=#fileFilter" +
+      "&sortBy=file:modified")
       .log("File : ${header.CamelFileName} at ${header.CamelFileLastModified}")
       .convertBodyTo(byte[].class)
       .log("Body converted")

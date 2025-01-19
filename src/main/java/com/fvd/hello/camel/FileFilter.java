@@ -14,8 +14,7 @@ import java.util.TimeZone;
 @ApplicationScoped
 @Named
 @Slf4j
-@SuppressWarnings("rawtypes")
-public class FileFilter implements GenericFileFilter {
+public class FileFilter implements GenericFileFilter<Object> {
 
   @ConfigProperty(name = "filter.lastmodified.seconds.beforeintegrate")
   Integer secondsSinceLastModified;
